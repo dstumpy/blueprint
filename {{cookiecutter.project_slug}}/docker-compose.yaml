@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+
+  dev:
+    build:
+      context: .
+      target: dev
+    image: {{ cookiecutter.project_slug }}_dev_image
+    container_name: {{ cookiecutter.project_slug }}_dev
+    volumes:
+      - .:/home/root/app/.
+      - vscode-extensions:/root/.vscode-server/extensions
+    command: bash -c "poetry run python"
+    tty: true
+
+  dev-jupyter:
+    build:
+      context: .
+      target: dev
+    image: {{ cookiecutter.project_slug }}_dev_jupyter_image
+    container_name: {{ cookiecutter.project_slug }}_dev_jupyter
+    ports:
+      - 8888:8888
+    volumes:
+      - .:/home/root/app/.
+      - vscode-extensions:/root/.vscode-server/extensions
+    command: bash -c "poetry run jupyter notebook --ip=0.0.0.0 --allow-root --no-browser --NotebookApp.disable_check_xsrf=True --NotebookApp.token=''"
+    tty: true
+
+  prod:
+    build:
+      context: .
+      target: prod
+    image: {{ cookiecutter.project_slug }}_prod_image
+    container_name: {{ cookiecutter.project_slug }}_prod
+    command: /bin/bash
+    tty: true
+
+volumes:
+  vscode-extensions:

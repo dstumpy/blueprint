@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  dev:
+    build:
+      context: .
+      target: dev
+    image: project_blueprint_dev_image
+    container_name: project_blueprint
+    volumes:
+      - .:/home/root/app/.
+      - vscode-extensions:/root/.vscode-server/extensions
+    command: bash -c "poetry run python"
+    tty: true
+
+volumes:
+  vscode-extensions:

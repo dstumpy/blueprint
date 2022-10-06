@@ -1,0 +1,33 @@
+[tool.black]
+line-length = 88
+
+[tool.isort]
+known_third_party = []
+line_length = 88
+multi-line-output = 3
+include_trainling_comma = "True"
+force_grid_wrap = 0
+use_parentheses = "True"
+
+[tool.poetry]
+name = "{{ cookiecutter.project_slug }}"
+version = "0.1.0"
+description = "
+authors = ["{{ cookiecutter.full_name }} <{{ cookiecutter.email }}>"]
+
+[tool.poetry.dependencies]
+python = "^{{ cookiecutter.pyenv_python_version }}"
+pytest = "5.2"
+
+[tool.poetry.dev-dependencies]
+black = "20.8b1"
+flake8 = "3.8.4"
+flake8-eradicate = "1.0.0"
+mypy = "0.790"
+pre-commit = "2.8.2"
+pydocstyle = "5.1.1"
+jupyter = "1.0.0"
+
+[build-system]
+requires = ["poetry>= 1.1.4"]
+build-backend = "poetry.masonry.api"
