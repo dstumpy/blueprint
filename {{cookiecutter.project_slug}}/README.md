@@ -6,56 +6,42 @@
 
 {{ cookiecutter.full_name }} <{{ cookiecutter.email }}>
 
-
 ## Dev Setup
 
-1. Activate ssh access to azure by creating a rsa-key & adding it to azure.
+1. Make sure `Docker` and `docker-compose` are installed. It is highly recommended to run the code in a Docker container.
+  
+    ### Other options
+    If you do not want to follow these steps using Docker, you can stop here and explore the project on your own using local environments such as `poetry` or `venv`.
 
-    Save your ssh-key password in a `credentials/.ssh_secret` file.\
-    The password is needed while adding your ssh-key to a ssh-agent during the build process.\
-    Investigate Dockerfile for more info.
-
-2. Build dev image
-    Make sure your ssh key (id_rsa) is placed as follows `$HOME/.ssh/id_rsa`.\
-    If the ssh key is placed somewhere else, adapt the following bash script:
+    Creating a local environment using `poetry` can be reached via
 
     ```bash
-    DOCKER_BUILDKIT=1 docker build --secret id=id_rsa,src="$HOME/.ssh/id_rsa" --secret id=ssh_pw,src=credentials/.ssh_secret --target dev -t {{ cookiecutter.project_slug }}_dev_image .
+    poetry install
+    ```
+    ( assuming that `poetry` is already installed and `pyproject.toml` is located at the current working directory)
+
+    To use a local environment, just run
+    ``` bash
+    python -m venv <my_venv_name>
+    source ./<my_venv_name>/bin/activate
     ```
 
-    After successfully building the image, start and stop the container once via command line.
-
+2. Next, create the Docker image using `docker-compose`
     ```bash
-    docker-compose up --force-recreate dev
-    Ctrl+C
-    ```
-    If you do not start it once, the next step can fail. The extension tries to rebuild the image itself, **if it does not find a stopped/cached container**.\
-    The build initiated by the VsCode extension does not use our fancy docker build secrets.
-
-3. You can use VsCode now to open the dev container
-    ```
-    CTRL+SHIFT+P -> 'Remote-Containers: Reopen in Container'
+    docker-compose build ide
     ```
 
-4. Install required pre-commits before your first commit.
+3. Make sure your SSH agent is running
     ```bash
-    pre-commit install
+    eval "$(ssh-agent -s)"
     ```
 
-## Remote Dev Setup (jupyter notebook development)
+4. After successfully building the image, create the container based on that image
+    ```bash
+    docker-compose up ide
+    ```
 
-1. Start docker container before executing python snippets in VsCode
+5. Now, the browser-like IDE `code-server` should be running and can be reached via `localhost:8123`.
 
-```bash
-docker-compose up --force-recreate dev-jupyter
-```
 
-2. Vscode settings
-
-```
-"python.dataScience.sendSelectionToInteractiveWindow": true,
-"python.dataScience.jupyterServerURI": "http://127.0.0.1:8888/",
-```
-
-3. Execute python snippets in VsCode
-4. Profit ...
+## Project Setup

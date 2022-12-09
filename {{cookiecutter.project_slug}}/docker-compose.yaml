@@ -1,30 +1,29 @@
-version: "3.7"
+version: "3.8"
 services:
 
-  dev:
+  # IDE in browser
+  ide:
     build:
       context: .
-      target: dev
+      target: ide
     image: {{ cookiecutter.project_slug }}_dev_image
     container_name: {{ cookiecutter.project_slug }}_dev
-    volumes:
-      - .:/home/root/app/.
-      - vscode-extensions:/root/.vscode-server/extensions
-    command: bash -c "poetry run python"
-    tty: true
-
-  dev-jupyter:
-    build:
-      context: .
-      target: dev
-    image: {{ cookiecutter.project_slug }}_dev_jupyter_image
-    container_name: {{ cookiecutter.project_slug }}_dev_jupyter
     ports:
-      - 8888:8888
+      - 8123:8123
+      - 8080:8080
+      - 40000:40000
     volumes:
-      - .:/home/root/app/.
-      - vscode-extensions:/root/.vscode-server/extensions
-    command: bash -c "poetry run jupyter notebook --ip=0.0.0.0 --allow-root --no-browser --NotebookApp.disable_check_xsrf=True --NotebookApp.token=''"
+      - .:/home/root/app
+      - pre-commit:/root/.cache/pre-commit
+      - poetry-cache:/root/.cache/pypoetry
+      - $HOME/.gitconfig:/root/.gitconfig
+      - $SSH_AUTH_SOCK:/tmp/authsock
+    environment:
+      SSH_AUTH_SOCK: /tmp/authsock
+    env_file:
+      - .env_dev
+    restart: unless-stopped
+    command: "code-server --auth none --bind-addr 0.0.0.0:8123 /home/root/app"
     tty: true
 
   prod:
@@ -38,3 +37,5 @@ services:
 
 volumes:
   vscode-extensions:
+  pre-commit:
+  poetry-cache:

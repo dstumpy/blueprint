@@ -6,7 +6,7 @@ WORKDIR /home/root
 
 # install UNIX tools
 RUN apt-get update \
-    && apt-get install -y apt-transport-https curl git gnupg2 openssh-server openjdk-11-jdk \
+    && apt-get install -y apt-transport-https curl git gnupg2 openssh-server \
     && apt-get update \
     && ACCEPT_EULA=Y apt-get install -y unixodbc-dev
 
@@ -21,7 +21,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
 RUN curl -sSL https://install.python-poetry.org | python -
 # source poetry
 # https://stackoverflow.com/questions/59895745/poetry-fails-to-install-in-docker
-ENV PATH = "${PATH}:/root/.poetry/bin"
+ENV PATH = "${PATH}:/root/.poetry/bin:/root/.local/bin"
 
 # create app folder & add to pythonpath for direct python shell execution
 WORKDIR /home/root/app

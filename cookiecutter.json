@@ -3,6 +3,6 @@
     "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
     "project_description": "This is a blueprint for Python projects.",
     "full_name": "Forename Surname",
-    "email": "{{ (cookiecutter.full_name.lower().split(' ')[0]).replace('ä','ae').replace('ö','oe').replace('ü','ue').replace('ß','ss')}}.{{ cookiecutter.full_name.lower().split(' ')[-1].replace('ä','ae').replace('ö','oe').replace('ü','ue').replace('ß','ss') }}@flaschenpost.de",
-    "pyenv_python_version": "3.7"
+    "email": "{{ (cookiecutter.full_name.lower().split(' ')[0]).replace('ä','ae').replace('ö','oe').replace('ü','ue').replace('ß','ss')}}.{{ cookiecutter.full_name.lower().split(' ')[-1].replace('ä','ae').replace('ö','oe').replace('ü','ue').replace('ß','ss') }}@gmail.com",
+    "pyenv_python_version": "3.9"
 }
