@@ -60,6 +60,7 @@ RUN curl  -o resmon.vsix.gz https://marketplace.visualstudio.com/_apis/public/ga
     gunzip resmon.vsix.gz; \
     code-server --install-extension ./resmon.vsix;
 
+# install poetry packages from .lock file
 COPY pyproject.toml poetry.lock* ./
 RUN poetry install &&\
     rm pyproject.toml poetry.lock
