@@ -2,56 +2,57 @@
 
 Cookiecutter blueprint for setting up Python projects.
 
-## Quickstart
-### Prerequisites
+## Contact
 
-This blueprint assumes you have the following tools set up:
+Danny Stumpe <danny.stumpe@gmail.com>
 
-* [cookiecutter](https://github.com/cookiecutter/cookiecutter)
-* docker & docker-compose e.g. on [windows](https://docs.docker.com/docker-for-windows/install)
-* setup to use ssh-key with passphrase on [azure-devops](https://docs.microsoft.com/en-us/azure/devops/repos/git/use-ssh-keys-to-authenticate?view=azure-devops)
+## Dev Setup
 
-### Initial Project Setup
+1. Make sure `Docker` and `docker-compose` are installed. It is highly recommended to run the code in a Docker container.
 
-1. Generate a Python package project:
-    ```bash
-    cookiecutter <githublink>
-    ```
+    ### Other options
+    If you do not want to follow these steps using Docker, you can stop here and explore the project on your own using local environments such as `poetry` or `venv`.
 
-2. Afterwards enter the created project folder and follow the steps in the local README.md
-
-3. Create a new repository on GitHub & push your local project
-
-### Project Blueprint development
-
-1. Build docker image
-
-     ```bash
-    docker-compose build --no-cache dev
-    ```
-
-    After successfully building the image, start and stop the container once via command line.
+    Creating a local environment using `poetry` can be reached via
 
     ```bash
-    docker-compose up --force-recreate dev
-    CTRL+C
+    poetry install
     ```
-    If you do not start it once, the next step can fail. The extension tries to rebuild the image itself, **if it does not find a stopped/cached container**.\
-    The build initiated by the extension does not use our fancy docker build secrets.
+    ( assuming that `poetry` is already installed and `pyproject.toml` is located at the current working directory)
 
-2. Connect into Container via [VsCode Remote Container extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-    1.  Open your folder in VsCode
-    2. `CTRL+SHIFT+P` -> "Remote-Containers: Reopen in Container"
-    3. Select poetry venv manually as your python environment once (due to a hash in the name, this cannot be done automatically). The environment is saved in your local project `.vscode/settings.json`. If you add & push these changes to the repo, nobody else has to manually update it again.
+    To use a local environment, just run
+    ``` bash
+    python -m venv <my_venv_name>
+    source ./<my_venv_name>/bin/activate
+    ```
 
-3. Initialize `pre-commit` hooks and Git repository:
-
+2. Next, create the Docker image using `docker-compose`
     ```bash
-    pre-commit install
-    git init .
-    git add .
-    git commit -m "initial commit"
+    docker-compose build ide
     ```
+
+3. Make sure your SSH agent is running
+    ```bash
+    eval "$(ssh-agent -s)"
+    ```
+
+    NOTE:
+    The image build will fail if you don't use SSH, since the `docker-compose.yaml` is designed to mount `$SSH_AUTH_SOCK:/tmp/authsock` in order to make git
+    available within the container.
+    If you don't want to use this feature, you can remove `SSH_AUTH_SOCK` mountning from `docker-compose.yaml`. This would also entail modification in the `Dockerfile` according to your needs.
+
+4. After successfully building the image, create the container based on that image
+    ```bash
+    docker-compose up ide
+    ```
+
+5. Now, the browser-like IDE `code-server` should be running and can be reached via `localhost:8123`.
+
+6. After accessing the browser IDE, the correct interpreter is probably not yet selected. Consequently, this has to be done manually (`Ctrl` + `Shift`+ `P` $\rightarrow$ type `"Python: Select Interpreter"` $\rightarrow$ navigate to the poetry python interpreter at `/root/.cache/pypoetry/virtualenvs/<project_venv>/bin/python`).
+
+7. Finally, create a new terminal and remove the recently active one.
+Now, everything is prepared to run the code using the correct environment.
+
 
 ## File description
 * .devcontainer/devcontainer.json\
