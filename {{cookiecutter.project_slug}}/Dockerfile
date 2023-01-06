@@ -58,7 +58,8 @@ RUN code-server --install-extension ms-python.python \
 # download resource monitor manually, since mutantdino.resourcemonitor cannot be loaded with code-server
 RUN curl  -o resmon.vsix.gz https://marketplace.visualstudio.com/_apis/public/gallery/publishers/mutantdino/vsextensions/resourcemonitor/1.0.7/vspackage; \
     gunzip resmon.vsix.gz; \
-    code-server --install-extension ./resmon.vsix;
+    code-server --install-extension ./resmon.vsix \
+    rm resmon.vsix;
 
 # install poetry packages from .lock file
 COPY pyproject.toml poetry.lock* ./
